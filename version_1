@@ -1,0 +1,161 @@
+<!DOCTYPE HTML>
+<html>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+<body>
+    <P>Haunted House 2019:<br><br>
+    <button id="Sequence" onclick="doit('sequence')"> Sequence </button> <br> <br>  
+    <button id="Event One" onclick="doit('event_one')"> Event One </button> <br>
+    <button id="Event Two" onclick="doit('event_two')"> Event Two </button> <br>
+    <button id="Event Three" onclick="doit('event_three')"> Event Three </button> <br>
+    <button id="Event Four" onclick="doit('event_four')"> Event Four </button> <br>   
+    <button id="Event Five" onclick="doit('event_five')"> Event Five </button> <br>   
+    <button id="Event Seix" onclick="doit('event_six')"> Event Six </button> <br>   
+    <button id="Event Seven" onclick="doit('event_seven')"> Event Seven </button> <br> 
+    <button id="Event Eight" onclick="doit('event_eight')"> Event Eight </button> <br>       
+    <button id="Event Niner" onclick="doit('event_nine')"> Event Nine </button> <br> <br> </br>
+    <button id="Random Start" onclick="doit('random_start')"> Random Start </button>  
+ 	<button id="Random End" onclick="doit('random_end')"> Random End </button>   
+                    
+    <script type="text/javascript">
+
+      var deviceIDs = {
+      	/* 2) Here enter your photon spark ids and names. Here is an example
+      	halloween_1:'190039000e51353532343635',
+		halloween_2:'46001d000e51353532343635',
+		halloween_3:'4e004f001051363036373538',
+		halloween_4:'3a005e000d51353532343635' 
+		*/
+		};
+	  
+	  // This is a mapping of the props to devices, io, and actions	
+	  var props = {
+	  	/* 3) This is where you map your prop name, to your device, to the output method (trnasistor1, 
+	  	 transistor2, led1, led2), and an action (basically pulse for you). What follows is my example.
+		event_one: {
+			device:'halloween_1',
+			method:'transistor1',
+			action:'pulse' },
+		event_two: {
+			device:'halloween_1',
+			method:'transistor2',
+			action:'pulse' },
+		event_three:{
+			device:'halloween_1',
+			method:'led0',
+			action:'pulse' },
+		event_four:{
+			device:'halloween_2',
+			method:'transistor2',
+			action:'pulse' },
+		event_five:{
+			device:'halloween_3',
+			method:'transistor1',
+			action:'pulse' },
+		event_six:{
+			device:'halloween_3',
+			method:'transistor2',
+			action:'pulse' },
+		event_seven:{
+			device:'halloween_4',
+			method:'led0',
+			action:'pulse' },
+		event_eight:{
+			device:'halloween_4',
+			method:'transistor1',
+			action:'pulse' },
+		event_nine:{
+			device:'halloween_4',
+			method:'transistor2',
+			action:'pulse' }
+			*/
+	  };
+	  
+	  // what prop to do and relative start time in milliseconds (time after previous)
+	  var sequence = {
+	  	/* 4) This is where you map the sequence you want. The time is in milliseconds for how long you want to wait before
+	  	starting the next item. You will want to see how long your props run to get the timing right.
+	  	 
+	  	event_one : 100,
+	  	event_two : 10000, 
+	  	event_three : 15000,
+	  	event_four : 5000, 
+	  	event_five : 10000,
+	  	event_six : 10000,
+	  	event_seven : 15000, 
+	  	event_eight : 30000,
+	  	event_nine : 100	
+		*/
+	  };
+	  
+	  //5) This is where you need to put in your access Token
+      var accessToken = "63c4d62b696bbfa35f51f5277c31ef355b534e3a";
+      
+      var particleAddress = "https://api.particle.io/v1/devices/";
+      var randomOn = 0;
+
+	  function trigger(prop) {
+  		// lookup the device in the prop
+        var device = props[prop].device; 
+       	// lookup the deviceID
+      	var deviceID = deviceIDs[device];
+      	// lookup the method to call
+      	var method = props[prop].method;
+      	// lookup the action to take
+      	var action = props[prop].action;
+      	
+       	var requestURL = particleAddress + deviceID + "/" + method + "/";
+       ( requestURL, { params: action, access_token: accessToken });		
+	  }
+	  
+	  function randomProp () {
+	  	//var x = Math.floor((Math.random() * 10) + 1);
+    	//document.getElementById("demo").innerHTML = x;
+		if (randomOn == 1) {
+		  // ramdomly pick a prop
+		  var len = Object.keys(sequence).length;
+		  var prop = Math.floor((Math.random() * len));
+		  console.log("sequence length" + len);
+		  console.log("prop number" + prop);
+		  // set it off
+		  trigger(Object.keys(sequence)[prop]);
+		  console.log("prop name" + Object.keys(sequence)[prop]);
+		  
+		  // reschedule this function in 30 seconds
+		  setTimeout(randomProp, 30000);
+		  }
+	  }
+	  	  
+      // this is the main function to dispatch an action
+      function doit(prop) {
+      	
+       	switch (prop) {
+       		//special cases
+       		
+       		// do a whole haunt sequence
+       		case "sequence":
+       		   	var timer = 0;
+       		    for (var item in sequence) {
+       		    	timer = timer + sequence[item];
+       		    	//console.log(item + ":" + timer);
+       		    	setTimeout(function (val) { trigger(val); }, timer, item);
+        		    } 
+       			break;
+   				
+   			case "random_start":
+   				randomOn = 1;
+   			    setTimeout(randomProp, 100);
+   				break;
+   				
+   			case "random_end":
+   				randomOn = 0;
+   				break;
+   				
+       		//generic cases
+       		default:
+       			trigger(prop);
+       	  }
+   	  }
+      
+    </script>
+</body>
+</html>    
