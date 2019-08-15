@@ -88,7 +88,7 @@
 	  };
 	  
 	  //5) This is where you need to put in your access Token
-      var accessToken = "63c4d62b696bbfa35f51f5277c31ef355b534e3a";
+      var accessToken = "access_token";
       
       var particleAddress = "https://api.particle.io/v1/devices/";
       var randomOn = 0;
