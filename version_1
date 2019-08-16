@@ -20,10 +20,10 @@
 
       var deviceIDs = {
       	/* 2) Here enter your photon spark ids and names. Here is an example
-      	halloween_1:'190039000e51353532343635',
-		halloween_2:'46001d000e51353532343635',
-		halloween_3:'4e004f001051363036373538',
-		halloween_4:'3a005e000d51353532343635' 
+      	halloween_1:'190039000e51353532340000',
+		halloween_2:'46001d000e51353532340000',
+		halloween_3:'4e004f001051363036370000',
+		halloween_4:'3a005e000d51353532340000' 
 		*/
 		};
 	  
